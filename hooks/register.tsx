@@ -348,16 +348,19 @@ export const register: Register = (on) => {
     const t = TEXT[view.lang]
     const { Box, Text, Markdown, Button } = $.ui.resolve(e)
     const expanded = await read($, bandExpanded)
-    const toggle = async (): Promise<void> => {
-      await update($, bandExpanded, (v) => !v)
-      await $.store.set(STORE_EXPANDED, !expanded).catch(() => undefined)
+    // 按鈕的處理一律馬上返回，慢的事（存設定、開面板）不等：引擎給按鈕處理 10 秒，
+    // 對話正忙（AI 在跑工具）時存設定、開面板可能排很久，等它們就會整個被跳過（2026-11-22 實際發生過）。
+    const toggle = (): void => {
+      void update($, bandExpanded, (v) => !v).catch(() => undefined)
+      void $.store.set(STORE_EXPANDED, !expanded).catch(() => undefined)
     }
+    const openFull = (): void => { void $.ui.open({ id: PANE, title: t.title }).catch(() => undefined) }
     const head = (
       <Box key="wb-head" flexDirection="row" gap={1}>
         <Text bold>{t.band}</Text>
         <Text dimColor>{countsLine(view)}</Text>
         <Button key="wb-toggle" plain label={expanded ? t.collapse : t.expand} onPress={toggle} />
-        {expanded && <Button key="wb-pane" plain label={t.full} onPress={() => $.ui.open({ id: PANE, title: t.title })} />}
+        {expanded && <Button key="wb-pane" plain label={t.full} onPress={openFull} />}
       </Box>
     )
     if (!expanded) return head
@@ -426,7 +429,7 @@ export const register: Register = (on) => {
         ))}
         {view.cheats.length > 0 && (
           <Box flexDirection="column">
-            <Button key="cheats" plain onPress={() => update($, showCheats, (v) => !v)}>
+            <Button key="cheats" plain onPress={() => { void update($, showCheats, (v) => !v).catch(() => undefined) }}>
               {cheatsOpen ? t.cheatsClose : t.cheatsOpen(view.cheats.length)}
             </Button>
             {cheatsOpen && view.cheats.map((c, i) => <Markdown key={`cheat-${i}`} text={c} dimColor />)}
