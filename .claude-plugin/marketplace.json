@@ -1,0 +1,12 @@
+{
+  "name": "claude-whiteboard",
+  "description": "A shared project whiteboard for Claude Code conversations.",
+  "owner": { "name": "mer20060704-sudo" },
+  "plugins": [
+    {
+      "name": "whiteboard",
+      "source": "./",
+      "description": "A WHITEBOARD.md shared by every conversation in a project: a collapsible band above the prompt, plus a summary at the start of each conversation."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "whiteboard",
+  "version": "1.0.0",
+  "description": "A WHITEBOARD.md shared by every conversation in a project: a collapsible band above the prompt, plus a summary at the start of each conversation. 跨對話共用白板：輸入框上方可縮小的橫條，每個對話開頭自動帶入摘要。",
+  "author": { "name": "mer20060704-sudo" },
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}
